@@ -3,31 +3,42 @@ package com.usjr.finalsexam.fragments;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Toast;
 
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.usjr.finalsexam.R;
 import com.usjr.finalsexam.adapters.VideoListAdapter;
 import com.usjr.finalsexam.entity.Video;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class VideoListFragment extends Fragment implements AdapterView.OnItemClickListener {
+
+    private FirebaseDatabase mFirebaseRef;
 
     public interface OnVideoSelectedListener {
         void videoSelectedListener(Video video);
     }
 
-    private VideoListAdapter        mAdapter;
+    private VideoListAdapter     mAdapter;
     private OnVideoSelectedListener mOnVideoSelectedListener;
 
     private DatabaseReference mRootDb;
     private DatabaseReference mVideosDb;
+
 
     public VideoListFragment() {
         // Required empty public constructor
@@ -46,9 +57,14 @@ public class VideoListFragment extends Fragment implements AdapterView.OnItemCli
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+
+//        FirebaseDatabase.getInstance().setPersistenceEnabled(true);
         mRootDb = FirebaseDatabase.getInstance().getReference();
         mVideosDb = mRootDb.child("videos");
+
+
     }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
